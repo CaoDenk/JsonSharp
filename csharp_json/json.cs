@@ -17,9 +17,15 @@ namespace csharp_json
             if (File.Exists(path))
             {
                 // using(Stream s=new (path) )
+                //File f =  File.(path);
+                FileInfo fileInfo =new FileInfo(path);
+                
                 reader = new StreamReader(path);
-                buf = new char[4096];
-                reader.ReadBlock(buf, 0, 4096);
+                buf = new char[fileInfo.Length];
+                int fileSize =(int)fileInfo.Length;
+
+                reader.Read(buf,0,fileSize);
+                //reader.ReadBlock(buf, 0);
                 return true;
 
             }
