@@ -11,6 +11,8 @@ namespace csharp_json
     {
         public char[] buf;
         StreamReader reader;
+        int bufferSize = 1024 * 1024 * 4;
+        int len = 0;
         public bool openFile(string path)
         {
 
@@ -19,12 +21,13 @@ namespace csharp_json
                 // using(Stream s=new (path) )
                 //File f =  File.(path);
                 FileInfo fileInfo =new FileInfo(path);
-                
-                reader = new StreamReader(path);
-                buf = new char[fileInfo.Length];
-                int fileSize =(int)fileInfo.Length;
+               
 
-                reader.Read(buf,0,fileSize);
+                reader = new StreamReader(path);
+                buf = new char[bufferSize];
+       
+
+                len= reader.Read(buf,0, bufferSize);
                 //reader.ReadBlock(buf, 0);
                 return true;
 
@@ -43,7 +46,7 @@ namespace csharp_json
             for (; ; )
             {
                 skipWhite(ref i);
-                if (i < buf.Count())
+                if (i < len)
                 {
                     //if (tokens.Count > 0)
                     //    Console.WriteLine("add   "+tokens.Last().value);
@@ -149,7 +152,7 @@ namespace csharp_json
         }
         void skipWhite(ref int i)
         {
-            while (i < buf.Count() && (buf[i] == ' '
+            while (i < len && (buf[i] == ' '
                 || buf[i] == '\t'
                 || buf[i] == '\b'
                 || buf[i] == '\n'
@@ -166,7 +169,7 @@ namespace csharp_json
             StringBuilder builder = new StringBuilder();
             builder.Append(c);
             i++;
-            while ((i < buf.Count() && buf[i] >= '0' && buf[i] <= '9'))
+            while ((i < len && buf[i] >= '0' && buf[i] <= '9'))
             {
                 builder.Append(buf[i]);
                 i++;
@@ -176,7 +179,7 @@ namespace csharp_json
                 intFlag = false;
                 builder.Append(buf[i]);
                 i++;
-                while ((i < buf.Count() && buf[i] >= '0' && buf[i] <= '9'))
+                while ((i < len && buf[i] >= '0' && buf[i] <= '9'))
                 {
                     builder.Append(buf[i]);
                     i++;
@@ -194,12 +197,12 @@ namespace csharp_json
             i++;
             StringBuilder builder = new StringBuilder(buf[i]);
 
-            while (i < buf.Count() && buf[i] != '"')
+            while (i < len && buf[i] != '"')
             {
                 builder.Append(buf[i]);
                 i++;
             }
-            if (i >= buf.Count())
+            if (i >= len)
             {
                 throw new Exception("lack '\"' ");
             }
@@ -216,6 +219,7 @@ namespace csharp_json
                 {
                     bool intflag;
                     string res = readNumber(ref i, buf[i], out intflag);
+                    
                     if (intflag)
                     {
                         vs.Add(int.Parse(res));
@@ -226,7 +230,7 @@ namespace csharp_json
                     }
 
                 } while (nextIsOk(',', ref i) && buf[i] >= '0' && buf[i] <= '9');
-                if (i >= buf.Count())
+                if (i >= len)
                 {
                     throw new Exception("lack  ']'  ");
                 }
@@ -250,7 +254,7 @@ namespace csharp_json
         bool nextIsOk(char expext, ref int i)
         {
             skipWhite(ref i);
-            if (i < buf.Count() && buf[i] == expext)
+            if (i < len && buf[i] == expext)
             {
                 i++;
                 skipWhite(ref i);
@@ -263,9 +267,7 @@ namespace csharp_json
         public object parse()
         {
             tokenize();
-
             int j = 0;
-
             switch (tokens.ElementAt(j).token)
             {
                 case Token.ARRAY_BEGIN:
@@ -446,7 +448,7 @@ namespace csharp_json
     class OneToken
     {
         public Token token;
-        public Object value;
+        public object value;
         public OneToken(Token token, Object value)
         {
             this.token = token;
@@ -458,7 +460,7 @@ namespace csharp_json
 
             if (token == Token.VALUE_ARRAY)
             {
-                foreach (var i in (Object[])value)
+                foreach (var i in (object[])value)
                 {
                     if (i is string)
                         builder.Append('"' + i.ToString() + "\",");
@@ -493,52 +495,43 @@ namespace csharp_json
 
         public object getValue(string key)
         {
-            Object obj;
-            dir.TryGetValue(key, out obj);
+            dir.TryGetValue(key, out object obj);
             return obj;
         }
         public JsonArray getJsonArray(string key)
         {
-            Object obj;
-            dir.TryGetValue(key, out obj);
+            dir.TryGetValue(key, out object obj);
             return (JsonArray)obj;
         }
         public JsonObject getJsonObject(string key)
         {
-
-            Object obj;
-            dir.TryGetValue(key, out obj);
+            dir.TryGetValue(key, out object obj);
             return (JsonObject)obj;
 
         }
         public int getInt(string key)
         {
-            Object obj;
-            dir.TryGetValue(key, out obj);
+            dir.TryGetValue(key, out object obj);
             return (int)obj;
         }
         public double getDouble(string key)
         {
-            Object obj;
-            dir.TryGetValue(key, out obj);
+            dir.TryGetValue(key, out object obj);
             return (double)obj;
         }
         public string[] getStringList(string key)
         {
-            Object obj;
-            dir.TryGetValue(key, out obj);
+            dir.TryGetValue(key, out object obj);
             return (string[])obj;
         }
         public object[] getNumberList(string key)
         {
-            Object obj;
-            dir.TryGetValue(key, out obj);
+            dir.TryGetValue(key, out object obj);
             return (object[])obj;
         }
         public string getString(string key)
         {
-            Object obj;
-            dir.TryGetValue(key, out obj);
+            dir.TryGetValue(key, out object obj);
             return (string)obj;
         }
         public void put(string key, object value)
