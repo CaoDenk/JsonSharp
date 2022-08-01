@@ -9,32 +9,26 @@ namespace csharp_json
 {
     class Json
     {
-        public char[] buf;
+        char[] buf;
         StreamReader reader;
         int bufferSize = 1024 * 1024 * 4;
         int len = 0;
-        public bool openFile(string path)
+        /// <summary>
+        /// 从硬盘中读取json文件到json对象中
+        /// </summary>
+        /// <param name="path"></param>
+        /// <exception cref="Exception"></exception>
+        public void openFile(string path)
         {
 
             if (File.Exists(path))
-            {
-                // using(Stream s=new (path) )
-                //File f =  File.(path);
-                FileInfo fileInfo =new FileInfo(path);
-               
-
+            {          
                 reader = new StreamReader(path);
-                buf = new char[bufferSize];
-       
-
+                buf = new char[bufferSize];      
                 len= reader.Read(buf,0, bufferSize);
-                //reader.ReadBlock(buf, 0);
-                return true;
-
             }
             else
-                throw new Exception("null file");
-
+                throw new Exception("file can't be found!");
         }
 
         public List<OneToken> tokens;
@@ -150,6 +144,10 @@ namespace csharp_json
             }
 
         }
+        /// <summary>
+        /// 跳过空字符
+        /// </summary>
+        /// <param name="i"></param>
         void skipWhite(ref int i)
         {
             while (i < len && (buf[i] == ' '
@@ -158,7 +156,6 @@ namespace csharp_json
                 || buf[i] == '\n'
                 || buf[i] == '\r'))
             {
-
                 i++;
 
             }
@@ -217,8 +214,7 @@ namespace csharp_json
                 List<object> vs = new List<object> { };
                 do
                 {
-                    bool intflag;
-                    string res = readNumber(ref i, buf[i], out intflag);
+                    string res = readNumber(ref i, buf[i], out bool intflag);
                     
                     if (intflag)
                     {
@@ -363,7 +359,6 @@ namespace csharp_json
                         }
 
                         nextTokenIsOk(Token.VALUE_STRING, tokens.ElementAt(j + 1));
-
                         jsonObject.put(key, currentToken.value);
                         j++;
                         break;
@@ -418,7 +413,8 @@ namespace csharp_json
                 flag = nextToken.token == Token.COMMA || nextToken.token == Token.OBJECT_END || nextToken.token == Token.ARRAY_END;
 
             else if (currentToken == Token.COMMA)
-                flag = nextToken.token == Token.KEY_STRING;
+                flag = nextToken.token == Token.KEY_STRING
+                   || nextToken.token == Token.OBJECT_END;
             else if (currentToken == Token.KEY_STRING)
                 flag = nextToken.token == Token.COLON;
             else if (currentToken == Token.ARRAY_BEGIN)
@@ -427,7 +423,6 @@ namespace csharp_json
                 throw new Exception("unexpect token->'" + nextToken.value + "'  ");
 
         }
-
 
     }
     enum Token
@@ -439,6 +434,7 @@ namespace csharp_json
         COMMA,
         COLON,
         INT,
+        //LONG,
         DOUBLE,
         KEY_STRING,
         VALUE_STRING,
@@ -536,9 +532,58 @@ namespace csharp_json
         }
         public void put(string key, object value)
         {
-            if (key == "")
-                throw new Exception("key cannot be empty");
+            //if (key=="")
+            //    throw new Exception("key cannot be empty");
             dir.Add(key, value);
+        }
+
+        public override string ToString()
+        {
+            string res = "{";
+            int i = 0;
+            foreach (string s in dir.Keys)
+            {
+                i++;
+                res += "\"" + s + "\":";
+
+                var jso = dir[s] as JsonObject;
+                if (jso != null)
+                {
+                    res += jso.ToString();
+                    if (dir.Keys.Count > i)
+                    {
+                        res += ",";
+                        continue;
+                    }
+                    else
+                        break;
+                } 
+                
+                var str = dir[s] as string;
+                if (str != null)
+                {
+                    res += "\"" + str + "\"";
+                    if (dir.Keys.Count > i)
+                    {
+                        res += ",";
+                        continue;
+                    }
+                    else
+                        break;
+                }
+
+                res += dir[s];
+                if (dir.Keys.Count > i)
+                {
+                    res += ",";
+                    continue;
+                }
+                else
+                    break;
+
+            }
+
+            return res + "}";
         }
     }
 }
