@@ -10,8 +10,11 @@ namespace csharp_json
     class Json
     {
         char[] buf;
-        StreamReader reader;
-        int bufferSize = 1024 * 1024 * 4;
+
+        int line = 0;
+
+
+        //const int bufferMaxSize = 1024 * 1024 * 4;
         int len = 0;
         /// <summary>
         /// 从硬盘中读取json文件到json对象中
@@ -22,10 +25,19 @@ namespace csharp_json
         {
 
             if (File.Exists(path))
-            {          
-                reader = new StreamReader(path);
-                buf = new char[bufferSize];      
-                len= reader.Read(buf,0, bufferSize);
+            {         
+         
+                byte[] bytes= File.ReadAllBytes(path);
+                if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
+                {
+                    buf = Encoding.UTF8.GetChars(bytes, 3, bytes.Length - 3);
+                }
+                else
+                    buf = Encoding.UTF8.GetChars(bytes);
+
+
+
+                len = buf.Length;
             }
             else
                 throw new Exception("file can't be found!");
@@ -34,9 +46,8 @@ namespace csharp_json
         public List<OneToken> tokens;
         public void tokenize()
         {
-            tokens = new List<OneToken> { };
-
             int i = 0;
+            tokens = new List<OneToken>();
             for (; ; )
             {
                 skipWhite(ref i);
@@ -132,7 +143,7 @@ namespace csharp_json
                     }
                     else
                     {
-                        throw new Exception("unexpect '" + buf[i] + "'");
+                        throw new Exception($"unexpect '{buf[i]}'  line at{line}");
                     }
                 }
                 else
@@ -156,8 +167,9 @@ namespace csharp_json
                 || buf[i] == '\n'
                 || buf[i] == '\r'))
             {
+                if (buf[i] == '\n')
+                    ++line;
                 i++;
-
             }
 
         }
@@ -282,10 +294,10 @@ namespace csharp_json
                     }
 
                 default:
-                    throw new Exception("unexpect ->'" + tokens.ElementAt(j).value + "' ");
+                    throw new Exception($"unexpect ->'{tokens.ElementAt(j).value}',line at {line}");
 
             }
-            throw new Exception("unexpect ->'" + tokens.ElementAt(j).value + "' ");
+            throw new Exception($"unexpect ->'{tokens.ElementAt(j).value}',line at {line}");
         }
         JsonArray parseJsonArray(ref int j)
         {
@@ -310,7 +322,7 @@ namespace csharp_json
                 j++;
                 return jsonObjects;
             }
-            throw new Exception("unexpect ->'" + tokens.ElementAt(j).value + "' ");
+            throw new Exception($"unexpect ->'{tokens.ElementAt(j).value}',line at {line}");
 
         }
 
@@ -380,7 +392,7 @@ namespace csharp_json
                         jsonObject.put(key, parseJsonArray(ref j));
                         break;
                     default:
-                        throw new Exception("unexpect ->'" + tokens.ElementAt(j).value + "' ");
+                        throw new Exception($"unexpect ->'{tokens.ElementAt(j).value}',line at {line}");
 
                 }
 
@@ -420,7 +432,7 @@ namespace csharp_json
             else if (currentToken == Token.ARRAY_BEGIN)
                 flag = nextToken.token == Token.OBJECT_BEGIN;
             if (!flag)
-                throw new Exception("unexpect token->'" + nextToken.value + "'  ");
+                throw new Exception($"unexpect token->'{nextToken.value}'");
 
         }
 
@@ -466,8 +478,7 @@ namespace csharp_json
                 builder.Append("\b]");
                 return builder.ToString();
             }
-
-            return "" + token + "\t" + value.ToString();
+            return $"{token}\t {value.ToString()}";
         }
     }
 
@@ -557,11 +568,12 @@ namespace csharp_json
                     }
                     else
                         break;
-                } 
-                
+                }
+
                 var str = dir[s] as string;
                 if (str != null)
                 {
+                    //res =$"\"{res}"{str}";
                     res += "\"" + str + "\"";
                     if (dir.Keys.Count > i)
                     {
@@ -583,7 +595,7 @@ namespace csharp_json
 
             }
 
-            return res + "}";
+            return $"{res}}}";
         }
     }
 }

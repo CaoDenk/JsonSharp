@@ -12,9 +12,9 @@ namespace csharp_json
         {
             Program p = new Program();
 
-            //p.testJsonArray();
-            //p.testJsonObject();
-            //p.testjson3();
+            p.testJsonArray();
+            p.testJsonObject();
+            p.testjson3();
             p.testPut();
             Console.ReadLine();
         }
