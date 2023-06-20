@@ -35,12 +35,10 @@ namespace csharp_json
                 else
                     buf = Encoding.UTF8.GetChars(bytes);
 
-
-
                 len = buf.Length;
             }
             else
-                throw new Exception("file can't be found!");
+                throw new Exception($"{path} can't be found!");
         }
 
         public List<OneToken> tokens;
