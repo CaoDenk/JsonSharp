@@ -1,0 +1,20 @@
+﻿
+  {
+    "name": "honghong2",
+    "age1": 25,
+    "score": [ 50.2, 60, 70, ],
+    "info": {
+
+      "height": 160,
+      "weight": 60,
+      "personal": {
+        "hobby": "sleep",
+        "favorite number": [ 6, 8, 66, 88, 666, 888 ],
+        "friends": [
+          "小白","小蓝","小黄"
+        ]
+
+         
+      }
+    }
+  }
