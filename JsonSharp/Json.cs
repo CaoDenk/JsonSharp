@@ -25,7 +25,8 @@ namespace JsonSharp
             {         
          
                 byte[] bytes= File.ReadAllBytes(path);
-                if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
+
+                if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) //判断包含BOM头
                 {
                     buf = Encoding.UTF8.GetChars(bytes, 3, bytes.Length - 3);
                 }
@@ -76,11 +77,6 @@ namespace JsonSharp
                     }
                     else if (buf[i] == '{')
                     {
-                        //if (tokens.Count() > 0 && tokens.Last().token == Token.VALUE_ARRAY)
-                        //{
-                        //    tokens.Last().token = Token.ARRAY_BEGIN;
-                        // //  tokens.ElementAt(tokens.Count()-1).token=Token.
-                        //} 暂时不需要修正
                         tokens.Add(new OneToken(Token.OBJECT_BEGIN, "{"));
                         i++;
                         continue;
@@ -129,16 +125,16 @@ namespace JsonSharp
                         continue;
                     }
 
-                    else if (buf[i] == 0)
-                    {
-                        tokens.Add(new OneToken(Token.END, "\0"));
-                        return;
+                    //else if (buf[i] == 0)
+                    //{
+                    //    tokens.Add(new OneToken(Token.END, "\0"));
+                    //    return;
 
-                    }
-                    else
-                    {
-                        throw new Exception($"unexpect '{buf[i]}'  line at{line}");
-                    }
+                    //}
+                    //else
+                    //{
+                    //    throw new Exception($"unexpect '{buf[i]}'  line at{line}");
+                    //}
                 }
                 else
                 {
@@ -155,7 +151,7 @@ namespace JsonSharp
         /// <param name="i"></param>
         void SkipWhite(ref int i)
         {
-            while (i < len && (buf[i] == ' '
+            while (i < len &&  (buf[i] == ' '
                 || buf[i] == '\t'
                 || buf[i] == '\b'
                 || buf[i] == '\n'
@@ -187,7 +183,6 @@ namespace JsonSharp
                     builder.Append(buf[i]);
                     i++;
                 }
-
             }
             else
                 intFlag = true;
@@ -242,7 +237,7 @@ namespace JsonSharp
             }
             else if (buf[i] == '"')
             {
-                List<string> vs = new List<string> { };
+                List<string> vs = new List<string> ();
                 do
                 {
                     vs.Add(ReadString(ref i));
@@ -338,18 +333,18 @@ namespace JsonSharp
                         break;
                     case Token.INT:
                         NextTokenIsOk(Token.INT, tokens.ElementAt(j + 1));
-                        jsonObject.put(key, currentToken.value);
+                        jsonObject.Put(key, currentToken.value);
                         j++;
                         break;
                     case Token.DOUBLE:
                         NextTokenIsOk(Token.DOUBLE, tokens.ElementAt(j + 1));
-                        jsonObject.put(key, currentToken.value);
+                        jsonObject.Put(key, currentToken.value);
                         j++;
                         break;
                     case Token.VALUE_ARRAY:
                         NextTokenIsOk(Token.VALUE_ARRAY, tokens.ElementAt(j + 1));
 
-                        jsonObject.put(key, currentToken.value);
+                        jsonObject.Put(key, currentToken.value);
                         j++;
                         break;
                     case Token.COLON:
@@ -365,7 +360,7 @@ namespace JsonSharp
                         }
 
                         NextTokenIsOk(Token.VALUE_STRING, tokens.ElementAt(j + 1));
-                        jsonObject.put(key, currentToken.value);
+                        jsonObject.Put(key, currentToken.value);
                         j++;
                         break;
 
@@ -375,7 +370,7 @@ namespace JsonSharp
                         break;
                     case Token.OBJECT_BEGIN:
                         j++;
-                        jsonObject.put(key, ParseJsonObject(ref j));
+                        jsonObject.Put(key, ParseJsonObject(ref j));
                         break;
                     case Token.OBJECT_END:
                         j++;
@@ -383,7 +378,7 @@ namespace JsonSharp
                     case Token.ARRAY_BEGIN:
                         NextTokenIsOk(Token.ARRAY_BEGIN, tokens.ElementAt(j + 1));
                         j++;
-                        jsonObject.put(key, ParseJsonArray(ref j));
+                        jsonObject.Put(key, ParseJsonArray(ref j));
                         break;
                     default:
                         throw new Exception($"unexpect ->'{tokens.ElementAt(j).value}',line at {line}");
@@ -431,165 +426,10 @@ namespace JsonSharp
         }
 
     }
-    public enum Token
-    {
-        ARRAY_BEGIN,
-        ARRAY_END,
-        OBJECT_BEGIN,
-        OBJECT_END,
-        COMMA,
-        COLON,
-        INT,
-        //LONG,
-        DOUBLE,
-        KEY_STRING,
-        VALUE_STRING,
-        END,
-        VALUE_ARRAY
-    }
-    public class OneToken
-    {
-        public Token token;
-        public object value;
-        public OneToken(Token token, Object value)
-        {
-            this.token = token;
-            this.value = value;
-        }
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder("" + token + " [");
 
-            if (token == Token.VALUE_ARRAY)
-            {
-                foreach (var i in (object[])value)
-                {
-                    if (i is string)
-                        builder.Append('"' + i.ToString() + "\",");
-                    else
-                        builder.Append(i.ToString() + ",");
-                }
-                builder.Append("\b]");
-                return builder.ToString();
-            }
-            return $"{token}\t {value.ToString()}";
-        }
-    }
+   
 
-    public class JsonArray
-    {
-        private List<JsonObject> jsons = new List<JsonObject> { };
-        public void Put(JsonObject json)
-        {
-            jsons.Add(json);
-        }
-        public JsonObject Get(int index)
-        {
-            return jsons.ElementAt(index);
-        }
+   
 
-    }
-
-    public class JsonObject
-    {
-        Dictionary<string, object> dir = new Dictionary<string, object> { };
-
-        public object getValue(string key)
-        {
-            dir.TryGetValue(key, out object obj);
-            return obj;
-        }
-        public JsonArray getJsonArray(string key)
-        {
-            dir.TryGetValue(key, out object obj);
-            return (JsonArray)obj;
-        }
-        public JsonObject getJsonObject(string key)
-        {
-            dir.TryGetValue(key, out object obj);
-            return (JsonObject)obj;
-
-        }
-        public int getInt(string key)
-        {
-            dir.TryGetValue(key, out object obj);
-            return (int)obj;
-        }
-        public double getDouble(string key)
-        {
-            dir.TryGetValue(key, out object obj);
-            return (double)obj;
-        }
-        public string[] getStringList(string key)
-        {
-            dir.TryGetValue(key, out object obj);
-            return (string[])obj;
-        }
-        public object[] getNumberList(string key)
-        {
-            dir.TryGetValue(key, out object obj);
-            return (object[])obj;
-        }
-        public string getString(string key)
-        {
-            dir.TryGetValue(key, out object obj);
-            return (string)obj;
-        }
-        public void put(string key, object value)
-        {
-            //if (key=="")
-            //    throw new Exception("key cannot be empty");
-            dir.Add(key, value);
-        }
-
-        public override string ToString()
-        {
-            string res = "{";
-            int i = 0;
-            foreach (string s in dir.Keys)
-            {
-                i++;
-                res += "\"" + s + "\":";
-
-                var jso = dir[s] as JsonObject;
-                if (jso != null)
-                {
-                    res += jso.ToString();
-                    if (dir.Keys.Count > i)
-                    {
-                        res += ",";
-                        continue;
-                    }
-                    else
-                        break;
-                }
-
-                var str = dir[s] as string;
-                if (str != null)
-                {
-                    //res =$"\"{res}"{str}";
-                    res += "\"" + str + "\"";
-                    if (dir.Keys.Count > i)
-                    {
-                        res += ",";
-                        continue;
-                    }
-                    else
-                        break;
-                }
-
-                res += dir[s];
-                if (dir.Keys.Count > i)
-                {
-                    res += ",";
-                    continue;
-                }
-                else
-                    break;
-
-            }
-
-            return $"{res}}}";
-        }
-    }
+  
 }
