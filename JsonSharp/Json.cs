@@ -5,15 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace csharp_json
+namespace JsonSharp
 {
-    class Json
+    public class Json
     {
         char[] buf;
-
         int line = 0;
-
-
         //const int bufferMaxSize = 1024 * 1024 * 4;
         int len = 0;
         /// <summary>
@@ -21,7 +18,7 @@ namespace csharp_json
         /// </summary>
         /// <param name="path"></param>
         /// <exception cref="Exception"></exception>
-        public void openFile(string path)
+        public void OpenFile(string path)
         {
 
             if (File.Exists(path))
@@ -42,13 +39,13 @@ namespace csharp_json
         }
 
         public List<OneToken> tokens;
-        public void tokenize()
+        public void Tokenize()
         {
             int i = 0;
             tokens = new List<OneToken>();
             for (; ; )
             {
-                skipWhite(ref i);
+                SkipWhite(ref i);
                 if (i < len)
                 {
                     //if (tokens.Count > 0)
@@ -56,10 +53,10 @@ namespace csharp_json
                     if (buf[i] == '[')
                     {
                         i++;
-                        skipWhite(ref i);
+                        SkipWhite(ref i);
                         if (buf[i] != '{')
                         {
-                            tokens.Add(new OneToken(Token.VALUE_ARRAY, readValueArray(ref i)));
+                            tokens.Add(new OneToken(Token.VALUE_ARRAY, ReadValueArray(ref i)));
                             i++;
                         }
                         else
@@ -96,8 +93,7 @@ namespace csharp_json
                     }
                     else if (buf[i] >= '0' && buf[i] <= '9')
                     {
-                        bool intflag;
-                        string res = readNumber(ref i, buf[i], out intflag);
+                        string res = ReadNumber(ref i, buf[i], out bool intflag);
                         if (intflag)
                         {
 
@@ -113,7 +109,7 @@ namespace csharp_json
                     }
                     else if (buf[i] == '"')
                     {
-                        tokens.Add(new OneToken(Token.VALUE_STRING, readString(ref i)));
+                        tokens.Add(new OneToken(Token.VALUE_STRING, ReadString(ref i)));
                         i++;
                         continue;
                     }
@@ -157,7 +153,7 @@ namespace csharp_json
         /// 跳过空字符
         /// </summary>
         /// <param name="i"></param>
-        void skipWhite(ref int i)
+        void SkipWhite(ref int i)
         {
             while (i < len && (buf[i] == ' '
                 || buf[i] == '\t'
@@ -171,7 +167,7 @@ namespace csharp_json
             }
 
         }
-        string readNumber(ref int i, char c, out bool intFlag)
+        string ReadNumber(ref int i, char c, out bool intFlag)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(c);
@@ -199,7 +195,7 @@ namespace csharp_json
             return builder.ToString();
 
         }
-        string readString(ref int i)
+        string ReadString(ref int i)
         {
             i++;
             StringBuilder builder = new StringBuilder(buf[i]);
@@ -215,16 +211,16 @@ namespace csharp_json
             }
             return builder.ToString();
         }
-        object readValueArray(ref int i)
+        object ReadValueArray(ref int i)
         {
-            skipWhite(ref i);
+            SkipWhite(ref i);
 
             if (buf[i] >= '0' && buf[i] <= '9')
             {
                 List<object> vs = new List<object> { };
                 do
                 {
-                    string res = readNumber(ref i, buf[i], out bool intflag);
+                    string res = ReadNumber(ref i, buf[i], out bool intflag);
                     
                     if (intflag)
                     {
@@ -235,7 +231,7 @@ namespace csharp_json
                         vs.Add(double.Parse(res));
                     }
 
-                } while (nextIsOk(',', ref i) && buf[i] >= '0' && buf[i] <= '9');
+                } while (NextIsOk(',', ref i) && buf[i] >= '0' && buf[i] <= '9');
                 if (i >= len)
                 {
                     throw new Exception("lack  ']'  ");
@@ -249,43 +245,43 @@ namespace csharp_json
                 List<string> vs = new List<string> { };
                 do
                 {
-                    vs.Add(readString(ref i));
+                    vs.Add(ReadString(ref i));
                     i++;
-                } while (nextIsOk(',', ref i) && buf[i] == '"');
+                } while (NextIsOk(',', ref i) && buf[i] == '"');
                 if (buf[i] == ']')
                     return vs.ToArray();
             }
             throw new Exception("unexpect ->'" + buf[i] + "'  ");
         }
-        bool nextIsOk(char expext, ref int i)
+        bool NextIsOk(char expext, ref int i)
         {
-            skipWhite(ref i);
+            SkipWhite(ref i);
             if (i < len && buf[i] == expext)
             {
                 i++;
-                skipWhite(ref i);
+                SkipWhite(ref i);
                 return true;
             }
             return false;
         }
 
 
-        public object parse()
+        public object Parse()
         {
-            tokenize();
+            Tokenize();
             int j = 0;
             switch (tokens.ElementAt(j).token)
             {
                 case Token.ARRAY_BEGIN:
                     j++;
-                    JsonArray jsonArray = parseJsonArray(ref j);
+                    JsonArray jsonArray = ParseJsonArray(ref j);
                     if (tokens.ElementAt(j).token == Token.END)
                         return jsonArray;
                     else break;
                 case Token.OBJECT_BEGIN:
                     {
                         j++;
-                        JsonObject jsonObject = parseJsonObject(ref j);
+                        JsonObject jsonObject = ParseJsonObject(ref j);
                         if (tokens.ElementAt(j).token == Token.END)
                             return jsonObject;
                         else break;
@@ -297,7 +293,7 @@ namespace csharp_json
             }
             throw new Exception($"unexpect ->'{tokens.ElementAt(j).value}',line at {line}");
         }
-        JsonArray parseJsonArray(ref int j)
+        JsonArray ParseJsonArray(ref int j)
         {
             JsonArray jsonObjects = new JsonArray();
             for (; ; )
@@ -305,7 +301,7 @@ namespace csharp_json
                 if (tokens.ElementAt(j).token == Token.OBJECT_BEGIN)
                 {
                     j++;
-                    jsonObjects.put(parseJsonObject(ref j));
+                    jsonObjects.Put(ParseJsonObject(ref j));
                 }
                 if (tokens.ElementAt(j).token != Token.COMMA)
                 {
@@ -324,7 +320,7 @@ namespace csharp_json
 
         }
 
-        JsonObject parseJsonObject(ref int j)
+        JsonObject ParseJsonObject(ref int j)
         {
             JsonObject jsonObject = new JsonObject();
             string key = null;
@@ -336,28 +332,28 @@ namespace csharp_json
                 {
                     case Token.KEY_STRING:
 
-                        nextTokenIsOk(Token.KEY_STRING, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.KEY_STRING, tokens.ElementAt(j + 1));
                         key = (string)currentToken.value;
                         j++;
                         break;
                     case Token.INT:
-                        nextTokenIsOk(Token.INT, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.INT, tokens.ElementAt(j + 1));
                         jsonObject.put(key, currentToken.value);
                         j++;
                         break;
                     case Token.DOUBLE:
-                        nextTokenIsOk(Token.DOUBLE, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.DOUBLE, tokens.ElementAt(j + 1));
                         jsonObject.put(key, currentToken.value);
                         j++;
                         break;
                     case Token.VALUE_ARRAY:
-                        nextTokenIsOk(Token.VALUE_ARRAY, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.VALUE_ARRAY, tokens.ElementAt(j + 1));
 
                         jsonObject.put(key, currentToken.value);
                         j++;
                         break;
                     case Token.COLON:
-                        nextTokenIsOk(Token.COLON, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.COLON, tokens.ElementAt(j + 1));
                         j++;
                         break;
 
@@ -368,26 +364,26 @@ namespace csharp_json
                             break;
                         }
 
-                        nextTokenIsOk(Token.VALUE_STRING, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.VALUE_STRING, tokens.ElementAt(j + 1));
                         jsonObject.put(key, currentToken.value);
                         j++;
                         break;
 
                     case Token.COMMA:
-                        nextTokenIsOk(Token.COMMA, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.COMMA, tokens.ElementAt(j + 1));
                         j++;
                         break;
                     case Token.OBJECT_BEGIN:
                         j++;
-                        jsonObject.put(key, parseJsonObject(ref j));
+                        jsonObject.put(key, ParseJsonObject(ref j));
                         break;
                     case Token.OBJECT_END:
                         j++;
                         return jsonObject;
                     case Token.ARRAY_BEGIN:
-                        nextTokenIsOk(Token.ARRAY_BEGIN, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.ARRAY_BEGIN, tokens.ElementAt(j + 1));
                         j++;
-                        jsonObject.put(key, parseJsonArray(ref j));
+                        jsonObject.put(key, ParseJsonArray(ref j));
                         break;
                     default:
                         throw new Exception($"unexpect ->'{tokens.ElementAt(j).value}',line at {line}");
@@ -400,7 +396,7 @@ namespace csharp_json
             throw new Exception("lack }");
         }
 
-        void nextTokenIsOk(Token currentToken, OneToken nextToken)
+        void NextTokenIsOk(Token currentToken, OneToken nextToken)
         {
             bool flag = false;
             if (currentToken == Token.KEY_STRING)
@@ -435,7 +431,7 @@ namespace csharp_json
         }
 
     }
-    enum Token
+    public enum Token
     {
         ARRAY_BEGIN,
         ARRAY_END,
@@ -451,7 +447,7 @@ namespace csharp_json
         END,
         VALUE_ARRAY
     }
-    class OneToken
+    public class OneToken
     {
         public Token token;
         public object value;
@@ -480,21 +476,21 @@ namespace csharp_json
         }
     }
 
-    class JsonArray
+    public class JsonArray
     {
         private List<JsonObject> jsons = new List<JsonObject> { };
-        public void put(JsonObject json)
+        public void Put(JsonObject json)
         {
             jsons.Add(json);
         }
-        public JsonObject get(int index)
+        public JsonObject Get(int index)
         {
             return jsons.ElementAt(index);
         }
 
     }
 
-    class JsonObject
+    public class JsonObject
     {
         Dictionary<string, object> dir = new Dictionary<string, object> { };
 

@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3BF6F082-6A31-45C1-983C-201378F175B8}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>csharp_json</RootNamespace>
-    <AssemblyName>csharp_json</AssemblyName>
+    <RootNamespace>JsonSharp</RootNamespace>
+    <AssemblyName>JsonSharp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,7 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="json.cs" />
+    <Compile Include="Deserialize.cs" />
+    <Compile Include="Json.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
