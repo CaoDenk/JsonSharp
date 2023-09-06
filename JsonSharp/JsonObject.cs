@@ -27,7 +27,7 @@ namespace JsonSharp
 
         public override string ToString()
         {
-            StringBuilder res = new StringBuilder("{");
+            StringBuilder res = new StringBuilder('{');
             int i = 0;
             foreach (string s in dict.Keys)
             {
@@ -62,7 +62,7 @@ namespace JsonSharp
 
                 if (dict.Keys.Count > i)
                 {
-                    res.Append(",");
+                    res.Append(',');
                     continue;
                 }
                 else

@@ -8,13 +8,38 @@ using System.Threading.Tasks;
 
 namespace JsonSharp
 {
-    internal class Deserializer
+    public class Deserializer
     {
+
+        /// <summary>
+        /// 反序列化List<T>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="jsonArray"></param>
+        /// <returns></returns>
+        public List<T> Deserialize<T>(JsonArray jsonArray)where T:new() 
+        {
+
+            return null;
+        }
+
         public T Deserialize<T>(JsonObject jsobject) where T : new()
         {
             Type type = typeof(T);
             return (T)GetInstance(jsobject,type);
         }
+
+        /// <summary>
+        /// 返回List<T>
+        /// </summary>
+        /// <param name="jsonArray"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        object GetInstance(JsonArray jsonArray, Type type)
+        {
+            return null;
+        }
+
         object GetInstance(JsonObject jsobject, Type type)
         {
             object obj = Activator.CreateInstance(type);
@@ -38,10 +63,27 @@ namespace JsonSharp
             {
                 return GetInstance(jsobject.GetValue<JsonObject>(key), type);
             }
-            if(jsobject.GetValue(key).GetType().GetGenericTypeDefinition()==typeof(List<>))
-            {
+            //json中支持 "key":[]
+            //得判别[]中是[object,...] 还是[JsonObject...]
+            //if(jsobject.GetValue(key).GetType().GetGenericTypeDefinition()==typeof(List<>))
+            //{
+            //    List<object> arr=jsobject.GetValue<List<object>>(key);
+            //    if (arr.Count == 0)
+            //        return null;
+            //    else if (arr[0].GetType()==typeof(JsonObject))//说明是
+            //    {
+            //        List<JsonObject> jsonArr = new List<JsonObject>();
+            //        for(int i=0; i<arr.Count;++i)
+            //        {
+            //            //jsonArr.Add()
+            //        }
 
-            }
+                    
+            //        ///
+            //    }
+
+            //    //return GetInstance(jsobject.GetValue<List<object>>(key), type);
+            //}
 
             switch (type)
             {

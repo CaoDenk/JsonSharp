@@ -1,23 +1,25 @@
-﻿using System;
+﻿using JsonSharp;
+using JsonTest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JsonSharp
+namespace JsontTest
 {
     class Test
     {
-        static void Main(string[] args)
-        {
-            Test p = new Test();
+        //static void Main(string[] args)
+        //{
+        //    Test p = new Test();
 
-            p.TestJsonArray();
-    
-            p.Testjson3();
-            p.TestPut();
-            Console.ReadLine();
-        }
+        //    p.TestJsonArray();
+
+        //    p.Testjson3();
+        //    p.TestPut();
+        //    Console.ReadLine();
+        //}
         void TestJsonArray()
         {
             string path = @"resources\test.json";
@@ -28,10 +30,10 @@ namespace JsonSharp
             //foreach (var t in j.tokens)
             //{
             //    Console.WriteLine(t.ToString());
-    
-   
+
+
         }
-     
+
 
         void Testjson2()
         {
@@ -42,11 +44,11 @@ namespace JsonSharp
             JsonObject js = (JsonObject)j.Parse();
             object[] jsonArray = (object[])js.GetValue("score");
 
-            foreach(var obj in jsonArray)
+            foreach (var obj in jsonArray)
             {
                 Console.WriteLine(obj);
             }
-          
+
 
         }
         /// <summary>
@@ -58,7 +60,7 @@ namespace JsonSharp
             Json j = new Json();
             j.OpenFile(path);
             JsonObject js = (JsonObject)j.Parse();
-            
+
             //string[] friends = js.getJsonObject("info").getJsonObject("personal").getStringList("friends");
             //// js.getStringList("")
             //foreach (string s in friends)
@@ -76,8 +78,25 @@ namespace JsonSharp
 
         }
 
+        static void Main(string[] args)
+        {
+            string path = @"resources\deserialize.json";
+            Json j = new Json();
+            j.OpenFile(path);
+            JsonObject js = (JsonObject)j.Parse();
+
+            //Console.WriteLine(js.GetType());
+            //Console.WriteLine(js.GetValue("address").GetType());
+            Deserializer deserializer = new Deserializer();
+            var t = deserializer.Deserialize<User>(js);
+            Console.WriteLine(t.age);
+            Console.WriteLine(t.address.city);
+            Console.WriteLine(t.address.street);
+
+        }
+
+
     }
- 
 
  
 }

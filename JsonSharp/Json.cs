@@ -124,17 +124,6 @@ namespace JsonSharp
                         i++;
                         continue;
                     }
-
-                    //else if (buf[i] == 0)
-                    //{
-                    //    tokens.Add(new OneToken(Token.END, "\0"));
-                    //    return;
-
-                    //}
-                    //else
-                    //{
-                    //    throw new Exception($"unexpect '{buf[i]}'  line at{line}");
-                    //}
                 }
                 else
                 {

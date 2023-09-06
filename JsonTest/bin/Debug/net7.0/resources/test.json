@@ -1,0 +1,115 @@
+﻿[
+  {
+    "name": "mingming",
+    "age": 20,
+    "score": [ 50, 60, 70 ],
+    "friendlooks": [
+      {
+        "hair": "black3"
+      },
+      {
+        "hair": "black3"
+
+      }
+    ],
+
+    "info": {
+
+      "height": 160,
+      "weight": 60,
+      "personal": {
+        "hobby": "sleep",
+        "friends": [ "honghong", "xingxing", "ling liang" ],
+        "favorite number": [ 6, 8, 66, 88, 666, 888 ]
+      }
+    }
+  },
+  {
+    "name": "honghong",
+    "age": 25,
+    "score": [ 50.2, 60, 70 ],
+    "info": {
+
+      "height": 160,
+      "weight": 60,
+      "personal": {
+        "hobby": "sleep",
+        "favorite number": [ 6, 8, 66, 88, 666, 888 ],
+
+
+        "friends": [
+          {
+            "name": "mingming0.0",
+            "age0": 24,
+            "score": [ 50, 60, 70 ],
+            "friendslooks": [
+              {
+                "hair": "black"
+              },
+              {
+                "hair": "black2"
+
+              }
+            ],
+
+            "info": {
+
+              "height": 160,
+              "weight": 60,
+              "personal": {
+                "hobby": "sleep",
+                "friends": [ "honghong", "xingxing", "ling liang" ],
+                "favorite number": [ 6, 8, 66, 88, 666, 888 ]
+              }
+            }
+          },
+          {
+            "name": "mingming0.1",
+            "age": 28,
+            "score": [ 50, 60, 70 ],
+            "friendslooks": [
+              {
+                "hair": "black0.1"
+              },
+              {
+                "hair": "black0.2"
+
+              }
+            ],
+            "info": {
+
+              "height": 160,
+              "weight": 63,
+              "personal": {
+                "hobby": "sleep",
+                "friends": [ "honghong", "xingxing", "ling liang" ],
+                "favorite number": [ 6, 8, 66, 88, 666, 888,80 ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "honghong3",
+    "age2": 24,
+    "score": [ 50, 60, 70 ],
+    "info": {
+
+      "height": 160,
+      "weight": 60.5,
+      "personal": {
+        "hobby": "sleep3",
+        "favorite number": [ 6.6, 8, 66, 88, 666, 888 ],
+
+        "looks3": {
+          "hair": "black3"
+
+        }
+
+      }
+    }
+  }
+
+]

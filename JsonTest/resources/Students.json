@@ -1,0 +1,22 @@
+﻿[
+  {
+
+    "name": "小明",
+    "age": 10,
+    "address": {
+      "street": "123 Main St",
+      "city": "New York"
+    }
+
+  },
+  {
+
+    "name": "小红",
+    "age": 11,
+    "address": {
+      "street": "123 Main St",
+      "city": "New York"
+    }
+
+  }
+]
