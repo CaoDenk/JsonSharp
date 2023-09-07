@@ -2,7 +2,7 @@
   {
     "name": "honghong2",
     "age1": 25,
-    "score": [ 50.2, 60, 70, ],
+    "score": [ 50.2, 60, 70 ],
     "info": {
 
       "height": 160,

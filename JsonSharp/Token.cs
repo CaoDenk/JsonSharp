@@ -10,17 +10,45 @@ namespace JsonSharp
     {
         ARRAY_BEGIN,//[
         ARRAY_END,//]
+
         OBJECT_BEGIN,//{
         OBJECT_END,//}
-        COMMA,//
-        COLON,
+
+        COMMA,// ,逗号
+        COLON,//冒号
+        VALUE_ARRAY,//[
+
+
+
         INT,
         //LONG,
         DOUBLE,
-        KEY_STRING,
+        NUMBER,//应该定义一个
+        STRING,
+        BOOL,
+
+
+
+        KEY_STRING,//
         VALUE_STRING,
-        VALUE_ARRAY,//[]
+       
         END,
        
     }
+    enum Number
+    {
+        INT,
+        LONG,
+        FLOAT,
+        DOUBLE,
+    }
+
+    enum ValueType
+    {
+        Number,
+        Bool,
+        String
+    }
+
+
 }

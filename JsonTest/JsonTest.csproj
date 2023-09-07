@@ -5,7 +5,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <StartupObject>JsontTest.Test</StartupObject>
+	  <StartupObject>JsonTest.Test</StartupObject>
   </PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="../JsonSharp/JsonSharp.csproj" />
@@ -21,6 +21,9 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	  <None Update="resources\test.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="resources\test2.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

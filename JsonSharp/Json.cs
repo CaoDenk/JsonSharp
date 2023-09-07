@@ -49,15 +49,13 @@ namespace JsonSharp
                 SkipWhite(ref i);
                 if (i < len)
                 {
-                    //if (tokens.Count > 0)
-                    //    Console.WriteLine("add   "+tokens.Last().value);
                     if (buf[i] == '[')
                     {
                         i++;
                         SkipWhite(ref i);
                         if (buf[i] != '{')
                         {
-                            tokens.Add(new OneToken(Token.VALUE_ARRAY, ReadValueArray(ref i)));
+                            tokens.Add(new OneToken(Token.VALUE_ARRAY, ReadValueObjectArray(ref i)));
                             i++;
                         }
                         else
@@ -99,7 +97,6 @@ namespace JsonSharp
                         {
                             tokens.Add(new OneToken(Token.DOUBLE, double.Parse(res)));
                         }
-
 
                         continue;
                     }
@@ -195,7 +192,7 @@ namespace JsonSharp
             }
             return builder.ToString();
         }
-        object ReadValueArray(ref int i)
+        object ReadValueObjectArray(ref int i)
         {
             SkipWhite(ref i);
 
@@ -316,46 +313,40 @@ namespace JsonSharp
                 {
                     case Token.KEY_STRING:
 
-                        NextTokenIsOk(Token.KEY_STRING, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.KEY_STRING, tokens.ElementAt(++j ));
                         key = (string)currentToken.value;
-                        j++;
+
                         break;
                     case Token.INT:
-                        NextTokenIsOk(Token.INT, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.INT, tokens.ElementAt(++j ));
                         jsonObject.Put(key, currentToken.value);
-                        j++;
                         break;
                     case Token.DOUBLE:
-                        NextTokenIsOk(Token.DOUBLE, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.DOUBLE, tokens.ElementAt(++j));
                         jsonObject.Put(key, currentToken.value);
-                        j++;
                         break;
                     case Token.VALUE_ARRAY:
-                        NextTokenIsOk(Token.VALUE_ARRAY, tokens.ElementAt(j + 1));
+                        NextTokenIsOk(Token.VALUE_ARRAY, tokens.ElementAt(++j ));
 
                         jsonObject.Put(key, currentToken.value);
-                        j++;
                         break;
                     case Token.COLON:
-                        NextTokenIsOk(Token.COLON, tokens.ElementAt(j + 1));
-                        j++;
+                        NextTokenIsOk(Token.COLON, tokens.ElementAt(++j));               
                         break;
 
                     case Token.VALUE_STRING:
                         if (tokens.ElementAt(j + 1).token == Token.COLON)
                         {
                             tokens.ElementAt(j).token = Token.KEY_STRING;
-                            break;
+                        }else
+                        {
+                            NextTokenIsOk(Token.VALUE_STRING, tokens.ElementAt(++j));
+                            jsonObject.Put(key, currentToken.value);
                         }
-
-                        NextTokenIsOk(Token.VALUE_STRING, tokens.ElementAt(j + 1));
-                        jsonObject.Put(key, currentToken.value);
-                        j++;
                         break;
 
                     case Token.COMMA:
-                        NextTokenIsOk(Token.COMMA, tokens.ElementAt(j + 1));
-                        j++;
+                        NextTokenIsOk(Token.COMMA, tokens.ElementAt(++j));
                         break;
                     case Token.OBJECT_BEGIN:
                         j++;
@@ -365,8 +356,7 @@ namespace JsonSharp
                         j++;
                         return jsonObject;
                     case Token.ARRAY_BEGIN:
-                        NextTokenIsOk(Token.ARRAY_BEGIN, tokens.ElementAt(j + 1));
-                        j++;
+                        NextTokenIsOk(Token.ARRAY_BEGIN, tokens.ElementAt(++j));
                         jsonObject.Put(key, ParseJsonArray(ref j));
                         break;
                     default:

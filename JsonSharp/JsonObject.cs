@@ -31,7 +31,7 @@ namespace JsonSharp
             int i = 0;
             foreach (string s in dict.Keys)
             {
-                i++;
+                ++i;
                 res.Append('"').Append(s).Append('"');
                 if (dict[s] is JsonObject jso)
                 {
@@ -42,14 +42,12 @@ namespace JsonSharp
                         res.Append(',');
                         continue;
                     }
-                    else
-                        break;
+                    else break;
                 }
 
                 if (dict[s] is string str)
                 {
-                    res.Append('"').Append(str).Append('"');
-
+                    res.Append($"\"{str}\"");
                     if (dict.Keys.Count > i)
                     {
                         res.Append(',');
@@ -63,7 +61,6 @@ namespace JsonSharp
                 if (dict.Keys.Count > i)
                 {
                     res.Append(',');
-                    continue;
                 }
                 else
                     break;
@@ -72,6 +69,7 @@ namespace JsonSharp
 
             return res.Append('}').ToString();
         }
+
 
         public bool ContainsKey(string key)=> dict.ContainsKey(key);
 

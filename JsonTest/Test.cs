@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JsontTest
+namespace JsonTest
 {
     class Test
     {
@@ -26,7 +26,7 @@ namespace JsontTest
             Json j = new Json();
             j.OpenFile(path);
             var js0 = (JsonArray)j.Parse();
-
+            Console.WriteLine(js0.ToString());
             //foreach (var t in j.tokens)
             //{
             //    Console.WriteLine(t.ToString());
@@ -35,7 +35,7 @@ namespace JsontTest
         }
 
 
-        void Testjson2()
+        static void Testjson2()
         {
 
             string path = @"resources\test2.json";
@@ -80,18 +80,7 @@ namespace JsontTest
 
         static void Main(string[] args)
         {
-            string path = @"resources\deserialize.json";
-            Json j = new Json();
-            j.OpenFile(path);
-            JsonObject js = (JsonObject)j.Parse();
-
-            //Console.WriteLine(js.GetType());
-            //Console.WriteLine(js.GetValue("address").GetType());
-            Deserializer deserializer = new Deserializer();
-            var t = deserializer.Deserialize<User>(js);
-            Console.WriteLine(t.age);
-            Console.WriteLine(t.address.city);
-            Console.WriteLine(t.address.street);
+            Testjson2();
 
         }
 
