@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace JsonSharp
 {
+    /// <summary>
+    /// json中的token
+    /// </summary>
     public enum Token
     {
         ARRAY_BEGIN,//[
@@ -26,7 +29,6 @@ namespace JsonSharp
         NUMBER,//应该定义一个
         STRING,
         BOOL,
-
 
 
         KEY_STRING,//

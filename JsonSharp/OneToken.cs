@@ -23,13 +23,11 @@ namespace JsonSharp
             {
                 foreach (var i in (object[])value)
                 {
-                    if (i is string)
+                    if (i is string s)
                     {
-                        builder.Append($"\"{i.ToString()} ,");
+                        builder.Append($"\"{s} ,");
                     }
-
-                    else
-                        builder.Append($"{i.ToString()},");
+                    else builder.Append($"{i.ToString()},");
                 }
                 builder.Append("\b]");
                 return builder.ToString();

@@ -13,6 +13,7 @@ namespace JsonSharp
     /// long 不支持 后缀得加L/l增加状态机数量
     /// double
     /// 科学计数法不支持
+    /// 状态机解析数字
     /// </summary>
     internal class ParseNumber
     {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace JsonTest
 {
+    //简单对象测试
     class Address
     {
         public string street { get; set; }

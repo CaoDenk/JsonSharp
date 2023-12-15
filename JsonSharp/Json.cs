@@ -149,6 +149,13 @@ namespace JsonSharp
             }
 
         }
+        /// <summary>
+        /// 这将来由状态机重新写下
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="c"></param>
+        /// <param name="intFlag"></param>
+        /// <returns></returns>
         string ReadNumber(ref int i, char c, out bool intFlag)
         {
             StringBuilder builder = new StringBuilder();
@@ -315,7 +322,6 @@ namespace JsonSharp
 
                         NextTokenIsOk(Token.KEY_STRING, tokens.ElementAt(++j ));
                         key = (string)currentToken.value;
-
                         break;
                     case Token.INT:
                         NextTokenIsOk(Token.INT, tokens.ElementAt(++j ));

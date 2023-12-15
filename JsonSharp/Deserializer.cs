@@ -17,11 +17,10 @@ namespace JsonSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="jsonArray"></param>
         /// <returns></returns>
-        public List<T> Deserialize<T>(JsonArray jsonArray)where T:new() 
-        {
-
-            return null;
-        }
+        //public List<T> Deserialize<T>(JsonArray jsonArray)where T:new() 
+        //{
+        //    return null;
+        //}
 
         public T Deserialize<T>(JsonObject jsobject) where T : new()
         {
@@ -30,15 +29,15 @@ namespace JsonSharp
         }
 
         /// <summary>
-        /// 返回List<T>
+        /// 返回List<T> 反序列化jsonarray 
         /// </summary>
         /// <param name="jsonArray"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        object GetInstance(JsonArray jsonArray, Type type)
-        {
-            return null;
-        }
+        //object GetInstance(JsonArray jsonArray, Type type)
+        //{
+        //    return null;
+        //}
 
         object GetInstance(JsonObject jsobject, Type type)
         {

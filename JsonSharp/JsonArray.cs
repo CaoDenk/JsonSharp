@@ -8,13 +8,11 @@ namespace JsonSharp
 {
     public class JsonArray
     {
-        private List<JsonObject> jsons = new List<JsonObject> ();
-        public void Put(JsonObject json)
-        {
-            jsons.Add(json);
-        }
-        public JsonObject ElementAt(int index)=> jsons.ElementAt(index);
-        public JsonObject this[int index]=>jsons.ElementAt(index);
+        private List<JsonObject> Jsons = new List<JsonObject> ();
+        public void Put(JsonObject json)=> Jsons.Add(json);
+
+        public JsonObject ElementAt(int index)=> Jsons.ElementAt(index);
+        public JsonObject this[int index]=> Jsons.ElementAt(index);
       
 
 

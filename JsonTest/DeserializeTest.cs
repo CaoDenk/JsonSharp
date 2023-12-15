@@ -1,7 +1,9 @@
 ﻿using JsonSharp;
 namespace JsonTest
 {
-
+    /// <summary>
+    /// 反序列化测试下
+    /// </summary>
     public class DeserializeTest
     {
         static void Main(string[] args)
@@ -10,7 +12,6 @@ namespace JsonTest
             Json j = new Json();
             j.OpenFile(path);
             JsonObject js = (JsonObject)j.Parse();
-
             //Console.WriteLine(js.GetType());
             //Console.WriteLine(js.GetValue("address").GetType());
             Deserializer deserializer = new Deserializer();

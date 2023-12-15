@@ -25,6 +25,7 @@ namespace JsonSharp
             dict.Add(key, value);
         }
 
+        //输出更好看
         public override string ToString()
         {
             StringBuilder res = new StringBuilder('{');
