@@ -1,3 +1,3 @@
 # json parser and deserializer
 
-自己学习解析json字符串，
+解析json字符串和反序列化
